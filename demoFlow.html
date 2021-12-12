@@ -1,0 +1,576 @@
+<!DOCTYPE html>
+<html lang="zh-Hant-TW">
+
+<head>
+  <meta charset="UTF-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Document</title>
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.0-beta3/dist/css/bootstrap.min.css" rel="stylesheet"
+    integrity="sha384-eOJMYsd53ii+scO/bJGFsiCZc+5NDVN2yr8+0RDqr0Ql0h+rP48ckxlpbzKgwra6" crossorigin="anonymous">
+</head>
+
+<body>
+  <div id="app">
+    <div class="w1400">
+      <div class="tooltipOuter">
+        <svg width="100%" height="700" class="line-shot">
+          <!-- <circle cx="0" cy="0" r="8" fill="#529fd9">
+          <animateMotion dur="1.6s" repeatCount="indefinite">
+            <mpath xlink:href="#path10"></mpath>
+          </animateMotion>
+        </circle> -->
+        </svg>
+      </div>
+      <!-- <img src="./top.png" alt="" class="topView"> -->
+      <img src="./map2021_pc.jpg" alt="" class="bg">
+
+      <div class="style-btn" :class="{'active':link==='hotThree'}" @click="link = 'hotThree'">最熱門路線</div>
+      <!-- <div class="style-btn" :class="{'active':link==='a1'}" @click="link = 'a1'">場域24到其他場域流動</div> -->
+      <div class="style-btn" :class="{'active':link==='a2'}" @click="link = 'a2'">入口到場域流動</div>
+      <div class="style-btn" :class="{'active':link==='all'}" @click="link = 'all'">全部</div>
+    </div>
+  </div>
+  <style>
+    .w1400 {
+      width: 1200px;
+      margin: 0 auto;
+      position: relative;
+    }
+
+
+    .style-btn {
+      cursor: pointer;
+      background-color: white;
+      border: 2px solid black;
+      display: inline-block;
+      padding: 10px;
+      font-size: 18px;
+      margin: 10px;
+    }
+
+    .active {
+      background-color: black;
+      /* border: 2px solid white; */
+      color: white;
+    }
+
+    .topView {
+      position: absolute;
+      width: 20%;
+      right: 0;
+    }
+
+    .path {
+      stroke-dasharray: 10;
+      animation: dash 18s linear infinite;
+    }
+
+    @keyframes dash {
+      to {
+        stroke-dashoffset: -1000;
+      }
+    }
+
+    img {
+      width: 100%;
+      height: 700px;
+    }
+
+    .line-shot {
+      position: absolute;
+    }
+
+    .tooltip2 {
+      position: relative;
+    }
+
+    /* .people {
+      animation-delay: 2s;
+    } */
+
+  .peopleFlow0{
+    fill: #214985;
+  }
+  .peopleFlow1{
+    fill: rgb(158, 119, 48);
+  }
+
+    .hotPathSec {
+      /* stroke-dasharray: 10; */
+      animation: dash 18s linear infinite;
+      stroke: rgb(158, 119, 48);
+    }
+
+    .hotPathFirst {
+      /* stroke-dasharray: 10; */
+      animation: dash 18s linear infinite;
+      stroke: #214985;
+    }
+
+
+  </style>
+  <script src="https://unpkg.com/vue@next"></script>
+  <script src='https://cdnjs.cloudflare.com/ajax/libs/axios/0.9.1/axios.min.js'
+    integrity='sha512-Xk3wWei2TGrsh9kDSBKUMIjw/86sLUvhtnv9f7fOuIwhhiUTKz8szkWkzHthrM5Bb3Bu9idSzkxOrkzhcneuiw=='
+    crossorigin='anonymous'></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/d3/7.1.1/d3.min.js"></script>
+  <script>
+    const app = Vue.createApp({
+      data() {
+        return {
+          link: 'hotThree',
+          selectData: [],
+          allData: [
+            //個別路徑
+            {
+              isPath: true,
+              pathName: 'hotThree',
+              hotPath: 1,
+              //點，標的，路徑
+              lineRun: [
+                  { x: 100, y: 300, name: '點1',color: '#214985', line: '熱門軌跡1' },
+                  { x: 280, y: 100, name: '點2',color: '#214985'},
+                  { x: 400, y: 400, name: '點3',color: '#214985' },
+              ],
+            },
+            {
+              isPath: true,
+              pathName: 'hotThree',
+              hotPath: 2,
+              //點，標的，路徑
+              lineRun: [
+                { x: 100, y: 200, name: '點1', line: '熱門軌跡2', color: 'rgb(158, 119, 48)' },
+                { x: 180, y: 400, name: '點2', color: 'rgb(158, 119, 48)' },
+                { x: 300, y: 500, name: '點3', color:'rgb(158, 119, 48)' },
+                { x: 600, y: 500, name: '點4', color: 'rgb(158, 119, 48)' },
+                { x: 800, y: 200, name: '點5', color: 'rgb(158, 119, 48)' },
+              ],
+            },
+            //個別點
+            // {
+            //   isPath: false,
+            //   pathName: 'a1',
+            //   //點路徑
+            //   linePath: [
+            //     [
+            //       {  x: 220, y: 500, line: '線段一' },
+            //       { x: 250, y: 150 }
+            //     ],
+            //     [
+            //       { x: 220, y: 500,line: '線段二'},
+            //       { x: 400, y: 150  }
+            //     ],
+            //     [
+            //       {  x: 220, y: 500, line: '線段三'},
+            //       { x: 530, y: 400 }
+            //     ],
+            //           ],
+            //     point: {
+            //     start: [{ x: 220, y: 500, name: '標的點24' }],
+            //     end: [{ x: 400, y: 150, name: '點二', color: 'red'}, 
+            //     { x: 250, y: 150, name: '點一', color: 'orange' }, 
+            //     { x: 530, y: 400, name: '點三' ,color: 'yellow'}]
+            //     }
+            // },
+            {
+              isPath: false,
+              pathName: 'a2',
+              //點路徑
+              linePath: [
+                [
+                  { x: 150, y: 80, line: '線段一' },
+                  { x: 350, y: 350, }
+                ],
+                [
+                  { x: 150, y: 80, line: '線段二' },
+                  { x: 360, y: 150}
+                ],
+                [
+                  { x: 150, y: 80, line: '線段三' },
+                  {  x: 530, y: 400 }
+                ],
+              ],
+              point:{
+                start: [{ x: 150, y: 80, line: '222', name: '入口5' }],
+                end: [
+                        { x: 350, y: 350, name: '地點22', color: 'red' },
+                        { x: 360, y: 150, name: '地點2', color: 'orange'  }, 
+                        { x: 530, y: 400 , name: '中庭' , color: 'yellow'}
+                ]
+              }
+            },
+          ],
+        }
+      }
+      ,
+      mounted() {
+        this.chnageData()
+      },
+      watch:{
+        link(){
+          this.chnageData();
+        }
+      },
+
+      methods: {
+        chnageData() {
+          d3.select('g').remove();
+          d3.selectAll('.tooltip').remove();
+          this.filter();
+        },
+        //篩選 如果 不是全部 就會視個別
+        filter(){
+          this.selectData = this.allData.filter((item) => {
+              if (this.link == 'all') {
+                return item
+              } else {
+                return item.pathName == this.link;
+              }
+            })
+            this.draw()
+          },
+        draw(data) {    
+          // 定義資料 位置
+          const area = d3.select("svg").append('g').style('position', 'relative');
+          let path = area.append('path')
+          let circle = area.selectAll('circle')
+
+        //點路徑
+        this.selectData.forEach((item,index) => {
+          console.log(item)
+          if (!item.isPath) {
+            //建立線段 兩層 一層虛線動畫, 一層tooltips使用
+            item.linePath.forEach((itemInner) => {
+              console.log(item)
+              let linearGen = d3.line()
+                .x(d => d.x)
+                .y(d => d.y)
+                let linePathInner = area.data(itemInner)
+                .append('path')
+                .attr('d', linearGen(itemInner))
+                .attr('stroke', 'black')
+                .attr('stroke-width', 2)
+                .attr('fill', 'none')
+                .attr('class', `path`)
+                let linePath = area.data(itemInner)
+                  .append('path')
+                  .attr('d', linearGen(itemInner))
+                  .attr('stroke', 'black')
+                  .attr('stroke-width', 10)
+                  .attr('fill', 'none')
+                  .style("opacity", 0)
+                  // .attr('class', `path`)
+                
+                // 線段tooltips
+              const tooltipLine = d3.select(".tooltipOuter")
+                .append("div")
+                .style("opacity", 0)
+                .style('position', 'absolute')
+                .attr("class", "tooltip")
+                .style("background-color", "white")
+                .style("border", "solid")
+                .style("border-width", "2px")
+                .style("border-radius", "5px")
+                .style("padding", "5px")
+                linePath.on('mouseover', function () {
+                tooltipLine.style("opacity", 1)
+              })
+                .on('mousemove', function (d) {
+                  let pt = d3.pointer(event, this)
+                  tooltipLine.style("opacity", 1)
+                    .html(`${d.target.__data__.line}`)
+                    .style('left', pt[0] + 30 + 'px')
+                    .style('top', pt[1] + 'px')
+                })
+                .on('mouseleave', function () {
+                  tooltipLine.style("opacity", 0)
+                });
+              // 外部發亮效果
+              let circleLight = circle.data(item.point.start)
+                .enter()
+                .append('circle')
+                .attr('cx', d => d.x)
+                .attr('cy', d => d.y)
+                .attr('r', 10)
+                .attr('class', 'light-style')
+              repeat();
+              function repeat() {
+                circleLight
+                  .transition()
+                  .duration(500)
+                  .attr("stroke-width", 0)
+                  .attr('stroke-opacity', 0)
+                  .attr('stroke', 'orange')
+                  .transition()
+                  .duration(500)
+                  .attr("stroke-width", 0)
+                  .attr('stroke-opacity', 0.5)
+                  .attr('stroke', 'orange')
+                  .transition()
+                  .duration(1000)
+                  .attr("stroke-width", 100)
+                  .attr('stroke-opacity', 0)
+                  .ease(d3.easeSin)
+                  .on("end", repeat);
+              }
+
+              // 原點
+              let positionIcon = circle.data(item.point.start)
+                .enter()
+                .append('circle')
+                .attr('cx', d => d.x)
+                .attr('cy', d => d.y)
+                .attr('r', 13)
+                .attr('fill', '#4972CE')
+
+              // 終點
+              console.log(item.point.end)
+              let positionEndIcon = circle.data(item.point.end)
+                .enter()
+                .append('circle')
+                .attr('cx', d => d.x)
+                .attr('cy', d => d.y)
+                .attr('r', 13)
+                .attr('fill', d => d.color)
+
+              //原點to顯示 要隱藏並蓋掉原本icon
+              let tooltipPosition = circle.data(item.point.start)
+                .enter()
+                .append('circle')
+                .attr('cx', d => d.x)
+                .attr('cy', d => d.y)
+                .attr('r', 15)
+                .attr('opacity', 0)
+                .attr('class', 'tooltipPosition')
+
+              //endPointton顯示 要隱藏並蓋掉原本icon
+              let tooltipPositionEnd = circle.data(item.point.end)
+                .enter()
+                .append('circle')
+                .attr('cx', d => d.x)
+                .attr('cy', d => d.y)
+                .attr('r', 15)
+                .attr('opacity', 0)
+                .attr('class', 'tooltipPosition')
+
+
+              // 建立地點tooltips - 原點
+              const tooltipTarget = d3.select(".tooltipOuter")
+                .append("div")
+                .style("opacity", 0)
+                .style('position', 'absolute')
+                .attr("class", "tooltip")
+                .style("background-color", "black")
+                .style('color', 'white')
+                .style("border", "solid")
+                .style("border-width", "2px")
+                .style("border-radius", "5px")
+                .style("padding", "5px")
+              tooltipPosition.on('mouseover', function () {
+                tooltipTarget.style("opacity", 1)
+              })
+                .on('mousemove', function (d) {
+                  let pt = d3.pointer(event, this)
+                  console.log(pt);
+                  tooltipTarget.style("opacity", 1)
+                    .html(`${d.target.__data__.name}`)
+                    .style('left', pt[0] + 30 + 'px')
+                    .style('top', pt[1] + 'px')
+                })
+                .on('mouseleave', function () {
+                  tooltipTarget.style("opacity", 0)
+                });
+
+              // 建立地點tooltips - 終點
+              const tooltipTarget2 = d3.select(".tooltipOuter")
+                .append("div")
+                .style("opacity", 0)
+                .style('position', 'absolute')
+                .attr("class", "tooltip")
+                .style("background-color", "black")
+                .style('color', 'white')
+                .style("border", "solid")
+                .style("border-width", "2px")
+                .style("border-radius", "5px")
+                .style("padding", "5px")
+              tooltipPositionEnd.on('mouseover', function () {
+                tooltipTarget.style("opacity", 1)
+              })
+                .on('mousemove', function (d) {
+                  let pt = d3.pointer(event, this)
+                  tooltipTarget.style("opacity", 1)
+                    .html(`${d.target.__data__.name}`)
+                    .style('left', pt[0] + 30 + 'px')
+                    .style('top', pt[1] + 'px')
+                })
+                .on('mouseleave', function () {
+                  tooltipTarget.style("opacity", 0)
+                });
+
+            })
+          }
+        })
+        
+      // 熱門路線製作
+      this.selectData.forEach((item, index, array) => {
+            if (item.isPath) {
+            //路徑
+            //前三路徑不同配色
+            let linearGen = d3.line()
+              .x(d => d.x)
+              .y(d => d.y)
+            let lineRun = area.data(item.lineRun)
+              .append('path')
+              .attr('d', linearGen(item.lineRun))
+              .attr('stroke', 'black')
+              .attr('stroke-width', 5)
+              .attr('fill', 'none')
+              .attr('class', `path`)
+              // console.log(item)
+            if (item.hotPath === 1) {
+              lineRun
+                .attr('class', 'hotPathFirst', 'path')
+                .attr('id', `path${index}`)
+            }
+            else if (item.hotPath == 2) {
+              lineRun
+                .attr('class', 'hotPathSec', 'path')
+                .attr('id', `path${index}`)
+            }
+            else if (item.hotPath == 3) {
+              lineRun
+                .attr('class', 'hotPathThird', 'path')
+                .attr('id', `path${index}`)
+            }
+
+              // 線段tooltips
+              const tooltipLine = d3.select(".tooltipOuter")
+                .append("div")
+                .style("opacity", 0)
+                .style('position', 'absolute')
+                .attr("class", "tooltip")
+                .style("background-color", "white")
+                .style("border", "solid")
+                .style("border-width", "2px")
+                .style("border-radius", "5px")
+                .style("padding", "5px")
+              lineRun.on('mouseover', function () {
+                tooltipLine.style("opacity", 1)
+              })
+                .on('mousemove', function (d) {
+                  let pt = d3.pointer(event, this)
+                  tooltipLine.style("opacity", 1)
+                    .html(`${d.target.__data__.line}`)
+                    .style('left', pt[0] + 30 + 'px')
+                    .style('top', pt[1] + 'px')
+                })
+                .on('mouseleave', function () {
+                  tooltipLine.style("opacity", 0)
+                });
+
+            let arr = [{}]
+            // 人流(球球) 按照你規劃的線段#path{index} 且 起始值會是0
+            let circleRun = circle.data(arr)
+              .enter()
+              .append('circle')
+              .attr('cx', '0')
+              .attr('cy', '0')
+              .attr('r', 12)
+              .attr('class', `peopleFlow${index}`)
+              .attr('fill', d => d.color)
+              .append('animateMotion')
+              .attr('aimation-delay', '2s')
+              .attr('repeatCount', 'indefinite')
+              .attr('dur', '5s')
+              .append('mpath')
+              .attr('xlink:href', `#path${index}`)
+
+            let circleLight = circle.data(item.lineRun)
+              .enter()
+              .append('circle')
+              .attr('cx', d => d.x)
+              .attr('cy', d => d.y)
+              .attr('r', 10)
+              .attr('class', 'light-style')
+            repeat();
+            function repeat() {
+              circleLight
+                .transition()
+                .duration(500)
+                .attr("stroke-width", 0)
+                .attr('stroke-opacity', 0)
+                .attr('stroke', 'orange')
+                .transition()
+                .duration(500)
+                .attr("stroke-width", 0)
+                .attr('stroke-opacity', 0.5)
+                .attr('stroke', 'orange')
+                .transition()
+                .duration(1000)
+                .attr("stroke-width", 100)
+                .attr('stroke-opacity', 0)
+                .ease(d3.easeSin)
+                .on("end", repeat);
+            }
+
+            // 地點圖示(自己製作)
+            let positionIcon = circle.data(item.lineRun)
+                .enter()
+                .append('circle')
+                .attr('cx', d => d.x)
+                .attr('cy', d => d.y)
+                .attr('r', 12)
+                .attr('fill', d => d.color)
+
+            //座標顯示 要隱藏並蓋掉原本icon
+            let tooltipPosition = circle.data(item.lineRun)
+              .enter()
+              .append('circle')
+              .attr('cx', d => d.x)
+              .attr('cy', d => d.y)
+              .attr('r', 30)
+              // .attr('fill','red')
+              .attr('opacity', 0)
+              .attr('class', 'tooltipPosition')
+
+            // 建立地點tooltips
+            const tooltipTarget = d3.select(".tooltipOuter")
+              .append("div")
+              .style("opacity", 0)
+              .style('position', 'absolute')
+              .attr("class", "tooltip")
+              .style("background-color", "white")
+              .style("border", "solid")
+              .style("border-width", "2px")
+              .style("border-radius", "5px")
+              .style("padding", "5px")
+            tooltipPosition.on('mouseover', function () {
+              tooltipTarget.style("opacity", 1)
+            })
+              .on('mousemove', function (d) {
+                let pt = d3.pointer(event, this)
+                tooltipTarget.style("opacity", 1)
+                  .html(`${d.target.__data__.name}`)
+                  .style('left', pt[0] + 30 + 'px')
+                  .style('top', pt[1] + 'px')
+              })
+              .on('mouseleave', function () {
+                tooltipTarget.style("opacity", 0)
+              });
+            }
+          })
+        }
+      },
+    }).mount("#app")
+
+
+
+
+
+
+  </script>
+</body>
+
+
+</html>
