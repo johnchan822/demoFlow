@@ -26,9 +26,9 @@
       <img src="./map2021_pc.jpg" alt="" class="bg">
 
       <div class="style-btn" :class="{'active':link==='hotThree'}" @click="link = 'hotThree'">最熱門路線</div>
-      <!-- <div class="style-btn" :class="{'active':link==='a1'}" @click="link = 'a1'">場域24到其他場域流動</div> -->
-      <div class="style-btn" :class="{'active':link==='a2'}" @click="link = 'a2'">入口到個別場域</div>
-      <div class="style-btn" :class="{'active':link==='all'}" @click="link = 'all'">全部</div>
+      <div class="style-btn" :class="{'active':link==='a2'}" @click="link = 'a2'">中庭</div>
+      <div class="style-btn" :class="{'active':link==='a1'}" @click="link = 'a1'">地點9</div>
+      <!-- <div class="style-btn" :class="{'active':link==='all'}" @click="link = 'all'">全部</div> -->
     </div>
   </div>
   <style>
@@ -129,9 +129,10 @@
               hotPath: 1,
               //點，標的，路徑
               lineRun: [
-                  { x: 100, y: 300, name: '點1',color: '#214985', line: '熱門軌跡1' },
-                  { x: 280, y: 100, name: '點2',color: '#214985'},
-                  { x: 400, y: 400, name: '點3',color: '#214985' },
+                  { x: 100, y: 300, name: '地點6',color: '#214985', line: '熱門軌跡1' },
+                  { x: 250, y: 100, name: '地點1',color: '#214985'},
+                  { x: 400, y: 100, name: '地點4',color: '#214985' },
+                  { x: 600, y: 100, name: '出口4', color: '#214985' },
               ],
             },
             {
@@ -140,63 +141,65 @@
               hotPath: 2,
               //點，標的，路徑
               lineRun: [
-                { x: 100, y: 200, name: '點1', line: '熱門軌跡2', color: 'rgb(158, 119, 48)' },
-                { x: 180, y: 400, name: '點2', color: 'rgb(158, 119, 48)' },
-                { x: 300, y: 500, name: '點3', color:'rgb(158, 119, 48)' },
-                { x: 600, y: 500, name: '點4', color: 'rgb(158, 119, 48)' },
-                { x: 800, y: 200, name: '點5', color: 'rgb(158, 119, 48)' },
+                { x: 100, y: 220, name: '地點6', line: '熱門軌跡2', color: 'rgb(158, 119, 48)' },
+                { x: 320, y: 500, name: '地點19', color:'rgb(158, 119, 48)' },
+                { x: 450, y: 500, name: '地點15', color: 'rgb(158, 119, 48)' },
+                { x: 700, y: 500, name: '地點13', color: 'rgb(158, 119, 48)' },
+                { x: 800, y: 400, name: '地點9', color: 'rgb(158, 119, 48)' },
               ],
             },
             //個別點
-            // {
-            //   isPath: false,
-            //   pathName: 'a1',
-            //   //點路徑
-            //   linePath: [
-            //     [
-            //       {  x: 220, y: 500, line: '線段一' },
-            //       { x: 250, y: 150 }
-            //     ],
-            //     [
-            //       { x: 220, y: 500,line: '線段二'},
-            //       { x: 400, y: 150  }
-            //     ],
-            //     [
-            //       {  x: 220, y: 500, line: '線段三'},
-            //       { x: 530, y: 400 }
-            //     ],
-            //           ],
-            //     point: {
-            //     start: [{ x: 220, y: 500, name: '標的點24' }],
-            //     end: [{ x: 400, y: 150, name: '點二', color: 'red'}, 
-            //     { x: 250, y: 150, name: '點一', color: 'orange' }, 
-            //     { x: 530, y: 400, name: '點三' ,color: 'yellow'}]
-            //     }
-            // },
+            {
+              isPath: false,
+              pathName: 'a1',
+              //點路徑
+              linePath: [
+                [
+                  { x: 800, y: 400, line: '線段一' },
+                  { x: 100, y: 160, }
+                ],
+                [
+                  { x: 800, y: 400, line: '線段二' },
+                  { x: 250, y: 100 }
+                ],
+                [
+                  { x: 800, y: 400, line: '線段三' },
+                  { x: 530, y: 410 }
+                ],
+              ],
+              point: {
+                start: [{  x: 800, y: 400, line: '222', name: '地點9' , color:'yellow'}],
+                end: [
+                  { x: 100, y: 160, name: '出口6', color: 'red', peopleCunt: 25 },
+                  { x: 250, y: 100, name: '地點1', color: 'orange', peopleCunt: 25 },
+                  { x: 530, y: 410, name: '中庭', color: 'blue', peopleCunt: 25 }
+                ]
+              }
+            },
             {
               isPath: false,
               pathName: 'a2',
               //點路徑
               linePath: [
                 [
-                  { x: 150, y: 80, line: '線段一' },
-                  { x: 350, y: 350, }
+                  {  x: 530, y: 410, line: '線段一' },
+                  { x: 100, y: 160, }
                 ],
                 [
-                  { x: 150, y: 80, line: '線段二' },
-                  { x: 360, y: 150}
+                  { x: 530, y: 410, line: '線段二' },
+                  { x: 250, y: 100}
                 ],
                 [
-                  { x: 150, y: 80, line: '線段三' },
-                  {  x: 530, y: 400 }
+                  { x: 530, y: 410, line: '線段三' },
+                  {  x: 800, y: 400 }
                 ],
               ],
               point:{
-                start: [{ x: 150, y: 80, line: '222', name: '入口5' }],
+                start: [{  x: 530, y: 410,  line: '222',color:'blue', name: '中庭' }],
                 end: [
-                        { x: 350, y: 350, name: '地點22', color: 'red' },
-                        { x: 360, y: 150, name: '地點2', color: 'orange'  }, 
-                        { x: 530, y: 400 , name: '中庭' , color: 'yellow'}
+                        {  x: 100, y: 160, name: '出口6', color: 'red', peopleCunt: 25 },
+                        { x: 250, y: 100, name: '地點1', color: 'orange', peopleCunt: 25  }, 
+                        { x: 800, y: 400 , name: '地點9' , color: 'yellow', peopleCunt: 25}
                 ]
               }
             },
@@ -322,7 +325,8 @@
                 .attr('cx', d => d.x)
                 .attr('cy', d => d.y)
                 .attr('r', 13)
-                .attr('fill', '#4972CE')
+                // .attr('fill', '#4972CE')
+                 .attr('fill', d => d.color)
 
               // 終點
               console.log(item.point.end)
@@ -334,6 +338,26 @@
                 .attr('r', 13)
                 .attr('fill', d => d.color)
 
+              const peopleCunt = circle.data(item.point.end);
+              peopleCunt
+                .enter()
+                .append('circle')
+                .attr('cx', (d) => d.x - 5)
+                .attr('cy', (d) => d.y - 40)
+                .attr('r', 18)
+                .attr('opacity', 1)
+                .attr('fill', '#535A5A')
+                .attr('class', 'tooltipPosition');
+              peopleCunt
+                .enter()
+                .append('text')
+                .text((d) => ` ${d.peopleCunt}% `)
+                .attr('x', (d) => d.x - 5)
+                .attr('y', (d) => d.y - 35)
+                .attr('font-size', '16px')
+                .attr('fill', 'white')
+                .attr('text-anchor', 'middle');
+  
               //原點to顯示 要隱藏並蓋掉原本icon
               let tooltipPosition = circle.data(item.point.start)
                 .enter()
